@@ -1,6 +1,8 @@
+require('dotenv').config();
 let mysql = require("mysql2");
 let express = require("express");
 let bodyParser = require("body-parser");
+let mysqlconnection= require("./DB/Connection.js")
 let cors = require("cors");
 let app = express();
 const util = require("util");
@@ -10,21 +12,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
-let mysqlconnection = mysql.createConnection({
-    host: "localhost",
-    user: "myDBuser",
-    password: "085213@a",
-    database: "myDB",
-    multipleStatements: true
-})
-mysqlconnection.connect((err)=>{
-    if(!err){
-        console.log("the DB is connected");
-    } else{
-        console.log("connection failed /n err:"+ JSON.stringify(err, undefined,2)); 
-        process.exit(1);
-    }
-})
 //applying the css
 app.use("/css", express.static("css"))
 //creating the Tables
