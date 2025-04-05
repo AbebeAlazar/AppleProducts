@@ -1,3 +1,4 @@
+require("dotenv").config();
 let mysql = require("mysql2");
 let mysqlconnection = mysql.createConnection({
     host: "localhost",
@@ -15,3 +16,4 @@ mysqlconnection.connect((err)=>{
     }
 })
 module.exports= mysqlconnection;
+

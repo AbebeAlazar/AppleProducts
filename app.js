@@ -10,10 +10,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:1234',
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
 app.use(bodyParser.json());
 //applying the css
-app.use("/css", express.static("css"))
+app.use("/css", express.static("css"));
+app.use("/js", express.static("js")); // Add this line here, not inside the route
 //creating the Tables
 app.get("/install", (req, res) => {
     let message = "tables created successfully";
@@ -96,6 +101,8 @@ console.log("Product inserted successfully"); // This will only log after the in
             return res.status(404).json({ error: "Product not found after insertion" });
         }
 
+    // End this line with your other middleware
+    // app.use("/js", express.static("js"));
     // Extracting the Product_Id from the first result in productResult array
         let PID = productResult[0].Product_Id;
 
@@ -124,24 +131,24 @@ app.get("/welcome", (req,res)=>{
 }) 
     // Endpoint to fetch all iPhone-related product data by joining multiple tables
              app.get("/iphone",(req,res)=>{
-             let query =  `SELECT * FROM Product
-              INNER JOIN ProductDescription ON Product.product_id = ProductDescription.product_id
-              INNER JOIN ProductPrice ON Product.product_id = ProductPrice.product_id 
-              `;
-              mysqlconnection.query(query,(err, result, fields) => {
+             let query = `SELECT * FROM Product
+                INNER JOIN ProductDescription ON Product.Product_Id = ProductDescription.Product_Id
+                INNER JOIN ProductPrice ON Product.Product_Id = ProductPrice.Product_Id`;
+            
+            mysqlconnection.query(query,(err, result, fields) => {
                 if (err) {
+                    console.error("Query error:", err); // Add error logging
                     return res.status(500).json({ error: err.message });
                 }
-                if (result.length > 0) {
+                console.log("Query results:", result); // Add result logging
+                if (result && result.length > 0) {
                     res.json({ Products: result }); 
-                    // res.redirect("/welcome")
-                }else{
+                } else {
+                    console.log("No products found"); // Add logging
                     res.redirect("/")
                 }
-                // res.json({ Products: result});
-                // res.end();
             });
-             })
+            });
 
 let port = 1234;
 app.listen(port, () => console.log(`Server running on port ${port}`));
