@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+        }
+        .product-image {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Product List</h2>
+        <div class="row" id="productContainer">
+            <!-- Product cards will be inserted here dynamically -->
+        </div>
+    </div>
+<script>
+fetch("/iphone")
+.then(response => response.json())
+.then(data =>{
+    console.log(data)
+    let iphone = data.Products;  
+    let productContainer = document.getElementById("productContainer");
+    iphone.forEach(phone => {
+        productContainer.innerHTML += `
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <img src="${phone.Product_Image}" alt="" class="img-fluid mb-3">
+                <div class="card-body">
+                    <h3 class="mb-3 fw-bold">${phone.products_name}</h3>
+                    <p class="fw-light">${phone.Product_brief_Discription}</p>
+                    <p class="fw-semibold">${phone.Product_Discription}</p>
+                    <p class="px-2">${phone.StartingPrice}</p>
+                    <p class="fw-normal py-2">${phone.PriceRange}</p>
+                    <a href="${phone.Product_Link}" class="btn btn-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+               `
+    });
+})
+.catch(error => {
+    console.error('Error:', error);
+    productContainer.innerHTML = '<p class="text-danger">Error loading products</p>';
+});
+</script>
+</body>
+</html>
